@@ -59,8 +59,10 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     * update the state by using Extended Kalman Filter equations
   */
 
+	cout << "UpdateEKF called" << endl;
 	//prep: calculate h(x)
 	VectorXd hx = CalculateHx(x_);
+	cout << "Vector hx = " << hx << endl;
 
 	//EKF measurement update - same equations as above
 	VectorXd z_pred = hx;
@@ -85,6 +87,8 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 
 VectorXd KalmanFilter::CalculateHx(const VectorXd& x_state) {
 
+	cout << "CalculateHx called" << endl;
+
 	VectorXd Hx(3);
 	Hx << 0,0,0;
 
@@ -98,12 +102,12 @@ VectorXd KalmanFilter::CalculateHx(const VectorXd& x_state) {
 	float c1 = px*px + py*py;
 
 	//check division by zero
-	//if(fabs(c1) < 0.0001){
+	if(c1 < 0.0001){
 		//cout << "CalculateHx () - Error - Division by Zero" << endl;
-	//	px += 0.001;
-	//	py += 0.001;
-	//	c1 = px*px + py*py;
-	//}
+		px += 0.001;
+		py += 0.001;
+		c1 = px*px + py*py;
+	}
 
 	float rho = sqrt(c1);
 
